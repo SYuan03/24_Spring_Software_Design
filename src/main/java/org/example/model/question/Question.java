@@ -1,4 +1,9 @@
-package org.example.model;
+package org.example.model.question;
+
+import org.example.model.answer.Answer;
+import org.example.strategies.scoring.ScoringPolicy;
+
+import javax.security.sasl.SaslClient;
 
 /**
  * @author SYuan03
@@ -8,6 +13,7 @@ public abstract class Question {
     protected int id;
     protected String description;
     protected int points;
+    protected ScoringPolicy scoringPolicy;
 
     // explain: 使用protected修饰符，使得子类可以访问
     // 抽象类没法实例化，所以构造方法只能被子类调用
@@ -41,5 +47,10 @@ public abstract class Question {
 
     public void setPoints(int points) {
         this.points = points;
+    }
+
+    // 计算得分
+    public int calculateScore(Answer answer) {
+        return scoringPolicy.calculateScore(this, answer);
     }
 }

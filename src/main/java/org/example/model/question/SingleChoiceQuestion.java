@@ -1,4 +1,4 @@
-package org.example.model;
+package org.example.model.question;
 
 import java.util.List;
 
@@ -31,4 +31,5 @@ public class SingleChoiceQuestion extends Question {
     public void setAnswer(int answer) {
         this.answer = answer;
     }
+
 }
