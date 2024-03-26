@@ -2,8 +2,10 @@ package org.example;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.factory.parser.ParserFactory;
+import org.example.model.answer.Answer;
 import org.example.model.answer.AnswerSheet;
 import org.example.model.exam.ExamSheet;
+import org.example.model.question.Question;
 import org.example.parser.Parser;
 
 import java.io.File;
@@ -28,7 +30,15 @@ public class Main {
         // 输出文件路径
         String output = args[1];
 
+
         // ----以下为实现代码----
+        Path path = Paths.get(output);
+        // 先写入一行表头
+        try {
+            Files.write(path, Collections.singleton("ExamId,StudentId,Score"), java.nio.file.StandardOpenOption.APPEND);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         // 1. 先把所有的ExamSheet读出来存在map里
         // Tag: 其实可以用文件名对应关系，但没说一定是一一对应的，所以还是用map比较好
         Map<Integer, ExamSheet> examSheetMap = readAndParseExamSheets(examsPath);
@@ -37,6 +47,7 @@ public class Main {
         File[] answerFiles = answersDir.listFiles();
         if (answerFiles != null) {
             for (File answerFile : answerFiles) {
+                log.debug("Parsing answer file: {}", answerFile.getName());
                 Parser parser = ParserFactory.createParser(answerFile.getName());
                 if (parser != null) {
                     AnswerSheet answerSheet = parser.parseAnswerSheet(answerFile);
@@ -44,10 +55,10 @@ public class Main {
                     int score = calculateSheetScore(examSheetMap.get(answerSheet.getExamId()), answerSheet);
                     // 4. 输出到文件
                     try {
-                        Path path = Paths.get(output);
                         logger.info("Writing to file: {}", path);
                         logger.info("ExamId: {}, StudentId: {}, Score: {}", answerSheet.getExamId(), answerSheet.getStuId(), score);
-                        Files.write(path, Collections.singletonList(answerSheet.getExamId() + "," + answerSheet.getStuId() + "," + score));
+                        // 追加不是覆盖
+                        Files.write(path, Collections.singleton(answerSheet.getExamId() + "," + answerSheet.getStuId() + "," + score), java.nio.file.StandardOpenOption.APPEND);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -63,13 +74,28 @@ public class Main {
         if (answerSheet.getSubmitTime() < examSheet.getStartTime() || answerSheet.getSubmitTime() > examSheet.getEndTime()) {
             return 0;
         }
+        // Tag: 题目id一定从1开始自增吗？
+        // 考虑这一点，选择先存储下id和题目index的对应关系
+        Map<Integer, Integer> idToIndex = new HashMap<>();
+        for (int i = 0; i < examSheet.getQuestions().size(); i++) {
+            idToIndex.put(examSheet.getQuestions().get(i).getId(), i);
+        }
         // 正常遍历每一题
         int score = 0;
         for (int i = 0; i < examSheet.getQuestions().size(); i++) {
             // BUG：可能有没作答的题目，这里需要判断一下
-            int temp = examSheet.getQuestions().get(i).calculateScore(answerSheet.getAnswers().get(i));
-            log.info("QuestionId: {}, Score: {}", examSheet.getQuestions().get(i).getId(), temp);
-            score += temp;
+            // 对于answerSheet中所有的题目，如果有对应的题目，就计算得分
+            // 通过id来找
+            for (Answer answer: answerSheet.getAnswers()) {
+                if (!idToIndex.containsKey(answer.getId())) {
+                    // 如果没有对应的题目，直接跳过
+                    continue;
+                }
+                Question question = examSheet.getQuestions().get(idToIndex.get(answer.getId()));
+                int temp = question.calculateScore(answer);
+                log.info("QuestionId: {}, Score: {}", question.getId(), temp);
+                score += temp;
+            }
         }
         return score;
     }
