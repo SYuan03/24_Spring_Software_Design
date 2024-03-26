@@ -13,7 +13,6 @@ import org.example.model.answer.Answer;
  * @date 2024/3/25
  */
 @SuperBuilder
-@JsonDeserialize(using = QuestionJsonDeserializer.class)
 public abstract class Question {
     protected int id;
     protected String description;

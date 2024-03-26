@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.example.factory.question.QuestionFactory;
 import org.example.model.dto.QuestionDTO;
@@ -25,6 +26,7 @@ public class QuestionJsonDeserializer extends JsonDeserializer<Question> {
     public Question deserialize(JsonParser jsonParser, DeserializationContext ctxt) throws IOException {
         ObjectMapper mapper = (ObjectMapper) jsonParser.getCodec();
         JsonNode root = mapper.readTree(jsonParser);
+        log.debug("Root node: {}", root);
         QuestionDTO questionDTO = mapper.treeToValue(root, QuestionDTO.class);
         log.info("Deserializing question: {}", questionDTO);
         // 调用QuestionFactory的createQuestion方法

@@ -26,10 +26,7 @@ class ParseJsonExamSheetTest {
         // 使用ClassLoader安全地获取resources目录下的测试文件路径
         URL resource = getClass().getClassLoader().getResource("cases/exams/1.json");
         assertNotNull(resource, "测试文件未找到");
-
-        String fileName = resource.getFile();
-
-        File file = new File(fileName);
+        File file = new File(resource.getFile());
 
         JsonParser jsonParser = new JsonParser();
         ExamSheet examSheet = jsonParser.parseExamSheet(file);

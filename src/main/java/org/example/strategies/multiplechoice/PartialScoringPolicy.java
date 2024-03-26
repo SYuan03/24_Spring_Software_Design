@@ -1,5 +1,6 @@
 package org.example.strategies.multiplechoice;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.model.answer.Answer;
 import org.example.model.answer.SingleAnswer;
 import org.example.model.question.MultipleChoiceQuestion;
@@ -15,6 +16,7 @@ import java.util.List;
  * 多选题的partial模式评分策略
  * 部分正确得分
  */
+@Slf4j
 public class PartialScoringPolicy implements ScoringPolicy {
 
     private final List<Integer> partialScores;
@@ -28,6 +30,10 @@ public class PartialScoringPolicy implements ScoringPolicy {
         int score = 0;
         // 先对content进行转换
         List<Integer> studentAnswers = MultipleChoiceStudentAnswerConverter.convert(content);
+
+        log.debug("answers: {}", answers);
+        log.debug("studentAnswers: {}", studentAnswers);
+        log.debug("partialScores: {}", partialScores);
 
         if (studentAnswers.equals(answers)) {
             score = points;
