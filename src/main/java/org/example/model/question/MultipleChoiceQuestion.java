@@ -1,6 +1,7 @@
 package org.example.model.question;
 
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.example.model.answer.Answer;
 import org.example.model.answer.SingleAnswer;
 import org.example.strategies.multiplechoice.ScoringPolicy;
@@ -11,7 +12,7 @@ import java.util.List;
  * @author SYuan03
  * @date 2024/3/25
  */
-@NoArgsConstructor
+@SuperBuilder
 public class MultipleChoiceQuestion extends Question {
     private List<String> options;
     private List<Integer> answers;          // 多选题答案是一个index列表
@@ -22,11 +23,11 @@ public class MultipleChoiceQuestion extends Question {
     // 策略模式
     private ScoringPolicy scoringPolicy;
 
-    public MultipleChoiceQuestion(int id, String description, int points, List<String> options, List<Integer> answers) {
-        super(id, description, points);
-        this.options = options;
-        this.answers = answers;
-    }
+//    public MultipleChoiceQuestion(int id, String description, int points, List<String> options, List<Integer> answers) {
+//        super(id, description, points);
+//        this.options = options;
+//        this.answers = answers;
+//    }
 
     // getters and setters
     public ScoringPolicy getScoringPolicy() {

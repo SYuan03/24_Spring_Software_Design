@@ -1,19 +1,21 @@
 package org.example.factory;
 
-import org.example.model.question.MultipleChoiceQuestion;
-import org.example.model.question.ProgrammingQuestion;
 import org.example.model.question.Question;
 import org.example.model.question.SingleChoiceQuestion;
+import org.example.model.dto.QuestionDTO;
 
 /**
  * @author SYuan03
  * @date 2024/3/26
  */
 public class QuestionFactory {
-    public static Question createQuestion(Object... parameters) {
-        int id = (Integer) parameters[0];
-        int type = (Integer) parameters[1];
-        String question = (String) parameters[2];
-
+    public static Question createQuestion(QuestionDTO questionDTO) {
+        // 先builder返回一个SingleChoiceQuestion对象
+        return SingleChoiceQuestion.builder()
+                .id(questionDTO.getId())
+                .description(questionDTO.getQuestion())
+                .options(questionDTO.getOptions())
+                .answer(5)
+                .build();
     }
 }

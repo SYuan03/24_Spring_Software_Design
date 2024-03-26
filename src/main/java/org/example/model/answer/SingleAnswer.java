@@ -25,5 +25,4 @@ public class SingleAnswer extends Answer {
     }
 
 
-
 }

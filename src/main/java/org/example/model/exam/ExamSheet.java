@@ -18,7 +18,5 @@ public class ExamSheet {
     private String title;
     private long startTime;
     private long endTime;
-
-    @JsonDeserialize(contentUsing = QuestionJsonDeserializer.class)
     private List<Question> questions;
 }

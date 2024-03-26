@@ -1,6 +1,7 @@
 package org.example.model.question;
 
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.example.model.answer.Answer;
 
 import java.util.List;
@@ -9,16 +10,16 @@ import java.util.List;
  * @author SYuan03
  * @date 2024/3/26
  */
-@NoArgsConstructor
+@SuperBuilder
 public class ProgrammingQuestion extends Question {
     private List<Sample> samples;
     private int timeLimit;
 
-    public ProgrammingQuestion(int id, String description, int points, List<Sample> samples, int timeLimit) {
-        super(id, description, points);
-        this.samples = samples;
-        this.timeLimit = timeLimit;
-    }
+//    public ProgrammingQuestion(int id, String description, int points, List<Sample> samples, int timeLimit) {
+//        super(id, description, points);
+//        this.samples = samples;
+//        this.timeLimit = timeLimit;
+//    }
 
     // getters and setters
     public List<Sample> getSamples() {
