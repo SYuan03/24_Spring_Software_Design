@@ -3,6 +3,7 @@ package org.example.model.question;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.example.model.answer.Answer;
 import org.example.model.answer.SingleAnswer;
 
@@ -13,6 +14,7 @@ import java.util.List;
  * @date 2024/3/25
  */
 @SuperBuilder
+@Slf4j
 public class SingleChoiceQuestion extends Question {
     private List<String> options;
     private int answer;
@@ -49,6 +51,8 @@ public class SingleChoiceQuestion extends Question {
         // answer是index，比如0->A, 1->B
         // 而content是比如"A"
         // 将content从string转成char再转成int
+        log.debug("Student answer: {}", singleAnswer.getContent());
+        log.debug("Correct answer: {}", this.answer);
         int studentAnswer = singleAnswer.getContent().charAt(0) - 'A';
         return studentAnswer == this.answer ? this.points : 0;
     }

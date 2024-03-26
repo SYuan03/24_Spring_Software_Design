@@ -15,6 +15,7 @@ import org.example.strategies.multiplechoice.ScoringPolicy;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author SYuan03
@@ -38,15 +39,28 @@ public class MultipleChoiceQuestionFactory implements QuestionFactory {
 
         log.debug("answer: {}", questionDTO.getAnswer());
         log.debug("answers: {}", questionDTO.getAnswers());
-        // 打印各自的类型
-        log.debug("answers type: {}", questionDTO.getAnswers().getClass());
 
         // Tag: 处理answer和answers
         // 主要是因为xml中多选题的答案是answers，不是answer
         if (questionDTO.getAnswers() != null) {
             // 将{answer=[0, 1, 2]}， LinkedHashMap类型转换为[0, 1, 2]
+//            LinkedHashMap<String, Object> answersMap = (LinkedHashMap<String, Object>) questionDTO.getAnswers();
+//            List<Integer> answerList = (List<Integer>) answersMap.get("answer");
+//            for (Object obj : answerList) {
+//                log.debug("Element class: {}", obj.getClass().getName());
+//            }
+//            multipleChoiceQuestion.setAnswers(answerList);
+            // Tag: 最难蚌的一集
+            // 假设questionDTO.getAnswers()返回的是LinkedHashMap<String, Object>
             LinkedHashMap<String, Object> answersMap = (LinkedHashMap<String, Object>) questionDTO.getAnswers();
-            List<Integer> answerList = (List<Integer>) answersMap.get("answer");
+            List<?> answerRawList = (List<?>) answersMap.get("answer");
+
+            // 使用流将String转换为Integer
+            List<Integer> answerList = answerRawList.stream()
+                    .map(Object::toString) // 首先将每个对象转换为String
+                    .map(Integer::valueOf) // 然后将String转换为Integer
+                    .collect(Collectors.toList()); // 收集结果到一个新的List
+
             multipleChoiceQuestion.setAnswers(answerList);
         } else {
             multipleChoiceQuestion.setAnswers((List<Integer>) questionDTO.getAnswer());

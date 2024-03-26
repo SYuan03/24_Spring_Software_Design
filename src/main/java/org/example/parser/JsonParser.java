@@ -1,10 +1,13 @@
 package org.example.parser;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import lombok.extern.slf4j.Slf4j;
+import org.example.deserializer.QuestionJsonDeserializer;
 import org.example.exception.ExamSheetParsingException;
 import org.example.model.answer.AnswerSheet;
 import org.example.model.exam.ExamSheet;
+import org.example.model.question.Question;
 
 import java.io.File;
 
@@ -17,6 +20,7 @@ public class JsonParser implements Parser {
 
     public ExamSheet parseExamSheet(File file) {
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new SimpleModule().addDeserializer(Question.class, new QuestionJsonDeserializer()));
         try {
             return objectMapper.readValue(file, ExamSheet.class);
         } catch (Exception e) {

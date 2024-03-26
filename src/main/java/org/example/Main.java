@@ -1,7 +1,9 @@
 package org.example;
 
-import org.example.model.exam.ExamSheet;
+import lombok.extern.slf4j.Slf4j;
+import org.example.factory.parser.ParserFactory;
 import org.example.model.answer.AnswerSheet;
+import org.example.model.exam.ExamSheet;
 import org.example.parser.Parser;
 
 import java.io.File;
@@ -9,10 +11,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
-import java.util.stream.Stream;
-import org.example.factory.parser.ParserFactory;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
+@Slf4j
 public class Main {
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Main.class);
 
@@ -64,7 +67,9 @@ public class Main {
         int score = 0;
         for (int i = 0; i < examSheet.getQuestions().size(); i++) {
             // BUG：可能有没作答的题目，这里需要判断一下
-            score += examSheet.getQuestions().get(i).calculateScore(answerSheet.getAnswers().get(i));
+            int temp = examSheet.getQuestions().get(i).calculateScore(answerSheet.getAnswers().get(i));
+            log.info("QuestionId: {}, Score: {}", examSheet.getQuestions().get(i).getId(), temp);
+            score += temp;
         }
         return score;
     }

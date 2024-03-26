@@ -1,5 +1,6 @@
 package org.example.factory.question;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.model.dto.QuestionDTO;
 import org.example.model.question.Question;
 import org.example.model.question.SingleChoiceQuestion;
@@ -8,6 +9,7 @@ import org.example.model.question.SingleChoiceQuestion;
  * @author SYuan03
  * @date 2024/3/26
  */
+@Slf4j
 public class SingleChoiceQuestionFactory implements QuestionFactory {
     @Override
     public Question createQuestion(QuestionDTO questionDTO) {
@@ -26,7 +28,9 @@ public class SingleChoiceQuestionFactory implements QuestionFactory {
             // Tag: 似乎xml的时候就会读到String类型
             // 如果answer是String类型，说明是字母，需要转换成数字
             String answer = (String) questionDTO.getAnswer();
-            singleChoiceQuestion.setAnswer(answer.charAt(0) - 'A');
+            log.debug("Answer: {}", answer);
+            log.debug("Answer - '0': {}", answer.charAt(0) - '0');
+            singleChoiceQuestion.setAnswer(answer.charAt(0) - '0');
         } else {
             throw new IllegalArgumentException("Answer type is incorrect");
         }

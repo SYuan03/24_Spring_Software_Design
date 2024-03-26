@@ -31,18 +31,23 @@ public class PartialScoringPolicy implements ScoringPolicy {
         // 先对content进行转换
         List<Integer> studentAnswers = MultipleChoiceStudentAnswerConverter.convert(content);
 
-        log.debug("answers: {}", answers);
-        log.debug("studentAnswers: {}", studentAnswers);
-        log.debug("partialScores: {}", partialScores);
+//        for (Object obj : partialScores) {
+//            log.debug("Element class of partialScores: {}", obj.getClass().getName());
+//        }
 
         if (studentAnswers.equals(answers)) {
+            log.info("PartialScoringPolicy: studentAnswers equals answers");
             score = points;
         } else if (new HashSet<>(answers).containsAll(studentAnswers)) {
-            // 对每个选项的分数求和
-            for (Integer studentAnswer : studentAnswers) {
-                score += partialScores.get(studentAnswer);
+            log.info("PartialScoringPolicy: studentAnswers is a subset of answers");
+            for (int studentAnswer : studentAnswers) {
+                // 找到studentAnswer在answers中的位置
+                int index = answers.indexOf(studentAnswer);
+                // 根据index找到对应的分数
+                score += partialScores.get(index);
             }
         }
+        log.info("PartialScoringPolicy: score: {}", score);
         return score;
     }
 }

@@ -1,0 +1,11 @@
+{
+  "examId": 2,
+  "stuId": 1,
+  "submitTime": 1710086400000,
+  "answers": [
+    {
+      "id": 2,
+      "answer": "AB"
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<exam>
+    <id>4</id>
+    <title>oj04</title>
+    <startTime>1704902400000</startTime>
+    <endTime>1718035200000</endTime>
+    <questions>
+        <question>
+            <id>1</id>
+            <type>1</type>
+            <question>int类型的最大值是多少？</question>
+            <options>
+                <option>2^64-1</option>
+                <option>2^32-1</option>
+                <option>2^63-1</option>
+                <option>2^31-1</option>
+            </options>
+            <answer>3</answer>
+            <points>10</points>
+        </question>
+        <question>
+            <id>2</id>
+            <type>2</type>
+            <question>本题选AB</question>
+            <options>
+                <option>A</option>
+                <option>B</option>
+                <option>C</option>
+                <option>D</option>
+            </options>
+            <answers>
+                <answer>0</answer>
+                <answer>1</answer>
+            </answers>
+            <points>20</points>
+            <scoreMode>fix</scoreMode>
+            <fixScore>10</fixScore>
+        </question>
+        <question>
+            <id>3</id>
+            <type>3</type>
+            <question>给出两个整数a和b, 求他们的和并以整数（int）的形式返回。</question>
+            <samples>
+                <sample>
+                    <input>1 2</input>
+                    <output>3</output>
+                </sample>
+                <sample>
+                    <input>3 4</input>
+                    <output>7</output>
+                </sample>
+            </samples>
+            <timeLimit>1000</timeLimit>
+            <points>70</points>
+        </question>
+    </questions>
+</exam>

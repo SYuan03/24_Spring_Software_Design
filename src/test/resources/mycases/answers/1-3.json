@@ -1,0 +1,19 @@
+{
+  "examId": 1,
+  "stuId": 3,
+  "submitTime": 1850086400000,
+  "answers": [
+    {
+      "id": 1,
+      "answer": "A"
+    },
+    {
+      "id": 2,
+      "answer": "ABC"
+    },
+    {
+      "id": 3,
+      "answer": "code"
+    }
+  ]
+}

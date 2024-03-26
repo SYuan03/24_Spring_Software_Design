@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<exam>
+    <id>2</id>
+    <title>oj02</title>
+    <startTime>1704902400000</startTime>
+    <endTime>1718035200000</endTime>
+    <questions>
+        <question>
+            <id>2</id>
+            <type>2</type>
+            <question>下面哪些是c语言中的关键字?</question>
+            <options>
+                <option>char</option>
+                <option>int</option>
+                <option>float</option>
+                <option>BigDecimal</option>
+            </options>
+            <answers>
+                <answer>0</answer>
+                <answer>1</answer>
+                <answer>2</answer>
+            </answers>
+            <points>20</points>
+            <scoreMode>partial</scoreMode>
+            <partialScores>
+                <partialScore>5</partialScore>
+                <partialScore>10</partialScore>
+                <partialScore>5</partialScore>
+            </partialScores>
+        </question>
+    </questions>
+</exam>
