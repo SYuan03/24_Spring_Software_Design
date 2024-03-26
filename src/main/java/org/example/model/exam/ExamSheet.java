@@ -1,9 +1,10 @@
 package org.example.model.exam;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.example.deserializer.QuestionJsonDeserializer;
 import org.example.model.question.Question;
-
-import java.security.Timestamp;
 import java.util.List;
 
 /**
@@ -11,10 +12,13 @@ import java.util.List;
  * @date 2024/3/26
  */
 @Data
+@NoArgsConstructor
 public class ExamSheet {
     private int id;
     private String title;
     private long startTime;
     private long endTime;
+
+    @JsonDeserialize(contentUsing = QuestionJsonDeserializer.class)
     private List<Question> questions;
 }

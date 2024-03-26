@@ -1,5 +1,6 @@
 package org.example.model.question;
 
+import lombok.NoArgsConstructor;
 import org.example.model.answer.Answer;
 import org.example.model.answer.SingleAnswer;
 
@@ -9,6 +10,7 @@ import java.util.List;
  * @author SYuan03
  * @date 2024/3/25
  */
+@NoArgsConstructor
 public class SingleChoiceQuestion extends Question {
     private List<String> options;
     private int answer;

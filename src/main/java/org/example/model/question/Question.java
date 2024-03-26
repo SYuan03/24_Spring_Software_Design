@@ -1,11 +1,14 @@
 package org.example.model.question;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.NoArgsConstructor;
 import org.example.model.answer.Answer;
 
 /**
  * @author SYuan03
  * @date 2024/3/25
  */
+@NoArgsConstructor
 public abstract class Question {
     protected int id;
     protected String description;

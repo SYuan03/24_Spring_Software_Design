@@ -1,5 +1,6 @@
 package org.example.model.question;
 
+import lombok.NoArgsConstructor;
 import org.example.model.answer.Answer;
 
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.List;
  * @author SYuan03
  * @date 2024/3/26
  */
+@NoArgsConstructor
 public class ProgrammingQuestion extends Question {
     private List<Sample> samples;
     private int timeLimit;

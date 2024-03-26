@@ -1,10 +1,13 @@
 package org.example.model.answer;
 
+import lombok.NoArgsConstructor;
+
 /**
  * @author SYuan03
  * @date 2024/3/26
  * 指除了一个answer字段(content)之外没有别的了
  */
+@NoArgsConstructor
 public class SingleAnswer extends Answer {
     private String content;
 
