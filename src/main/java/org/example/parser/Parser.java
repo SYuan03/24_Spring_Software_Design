@@ -1,12 +1,19 @@
 package org.example.parser;
 
+import org.example.model.answer.AnswerSheet;
+import org.example.model.exam.ExamSheet;
+
+import java.io.File;
+
 /**
  * @author admin
  * @date 2024/3/26
  * 为了保持灵活
- * 并不要求一定要实现parseExamSheet和parseAnswerSheet方法
- * 因为可能有的Parser只需要实现一个方法
+ * 有的Parser可以解析ExamSheet，有的可以解析AnswerSheet
  */
 public interface Parser {
+    ExamSheet parseExamSheet(File file);
+
+    AnswerSheet parseAnswerSheet(File file);
 
 }

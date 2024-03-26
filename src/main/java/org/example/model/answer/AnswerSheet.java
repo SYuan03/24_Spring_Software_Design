@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class AnswerSheet {
     private int examId;
-    private int studentId;
+    private int stuId;
     private long submitTime;
     private List<Answer> answers;
 }

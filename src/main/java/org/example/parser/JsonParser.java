@@ -14,16 +14,25 @@ import java.io.File;
  * @date 2024/3/26
  */
 public class JsonParser implements Parser {
-    private static final Logger logger = LoggerFactory.getLogger(JsonParser.class);
+    private final Logger logger = LoggerFactory.getLogger(JsonParser.class);
 
-    public static ExamSheet parseExamSheet(String filePath) {
+    public ExamSheet parseExamSheet(File file) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            return objectMapper.readValue(new File(filePath), ExamSheet.class);
+            return objectMapper.readValue(file, ExamSheet.class);
         } catch (Exception e) {
-            logger.error("Failed to parse exam sheet from file: {}", filePath);
-            throw new ExamSheetParsingException("Failed to parse exam sheet from file: " + filePath, e);
+            logger.error("Failed to parse exam sheet from file: {}", file.getAbsolutePath());
+            throw new ExamSheetParsingException("Failed to parse exam sheet from file: " + file.getAbsolutePath(), e);
         }
     }
 
+    public AnswerSheet parseAnswerSheet(File file) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.readValue(file, AnswerSheet.class);
+        } catch (Exception e) {
+            logger.error("Failed to parse answer sheet from file: {}", file.getAbsolutePath());
+            throw new ExamSheetParsingException("Failed to parse answer sheet from file: " + file.getAbsolutePath(), e);
+        }
+    }
 }
