@@ -26,9 +26,9 @@ public class QuestionJsonDeserializer extends JsonDeserializer<Question> {
     public Question deserialize(JsonParser jsonParser, DeserializationContext ctxt) throws IOException {
         ObjectMapper mapper = (ObjectMapper) jsonParser.getCodec();
         JsonNode root = mapper.readTree(jsonParser);
-        log.debug("Root node: {}", root);
+//        log.debug("Root node: {}", root);
         QuestionDTO questionDTO = mapper.treeToValue(root, QuestionDTO.class);
-        log.info("Deserializing question: {}", questionDTO);
+//        log.info("Deserializing question: {}", questionDTO);
         // 调用QuestionFactory的createQuestion方法
         QuestionFactory questionFactory = QuestionFactory.getFactory(questionDTO.getType());
         return questionFactory.createQuestion(questionDTO);

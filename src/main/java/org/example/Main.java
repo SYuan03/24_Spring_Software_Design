@@ -5,6 +5,7 @@ import org.example.factory.parser.ParserFactory;
 import org.example.model.answer.Answer;
 import org.example.model.answer.AnswerSheet;
 import org.example.model.exam.ExamSheet;
+import org.example.model.question.ProgrammingQuestion;
 import org.example.model.question.Question;
 import org.example.parser.Parser;
 
@@ -19,8 +20,6 @@ import java.util.Map;
 
 @Slf4j
 public class Main {
-    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Main.class);
-
     public static void main(String[] args) {
         String casePath = args[0];
         // 题目文件夹路径
@@ -35,7 +34,7 @@ public class Main {
         Path path = Paths.get(output);
         // 先写入一行表头
         try {
-            Files.write(path, Collections.singleton("ExamId,StudentId,Score"), java.nio.file.StandardOpenOption.APPEND);
+            Files.write(path, Collections.singleton("examId, stuId, score"), java.nio.file.StandardOpenOption.APPEND);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -52,11 +51,13 @@ public class Main {
                 if (parser != null) {
                     AnswerSheet answerSheet = parser.parseAnswerSheet(answerFile);
                     // 3. 计算得分
+                    log.debug("examSheet: {}", examSheetMap.get(answerSheet.getExamId()));
+                    log.debug("answerSheet: {}", answerSheet);
                     int score = calculateSheetScore(examSheetMap.get(answerSheet.getExamId()), answerSheet);
                     // 4. 输出到文件
                     try {
-                        logger.info("Writing to file: {}", path);
-                        logger.info("ExamId: {}, StudentId: {}, Score: {}", answerSheet.getExamId(), answerSheet.getStuId(), score);
+                        log.info("Writing to file: {}", path);
+                        log.info("ExamId: {}, StudentId: {}, Score: {}", answerSheet.getExamId(), answerSheet.getStuId(), score);
                         // 追加不是覆盖
                         Files.write(path, Collections.singleton(answerSheet.getExamId() + "," + answerSheet.getStuId() + "," + score), java.nio.file.StandardOpenOption.APPEND);
                     } catch (IOException e) {
@@ -75,28 +76,28 @@ public class Main {
             return 0;
         }
         // Tag: 题目id一定从1开始自增吗？
-        // 考虑这一点，选择先存储下id和题目index的对应关系
+        // 考虑这一点，选择先存储下所有的answer的id和index的对应关系
         Map<Integer, Integer> idToIndex = new HashMap<>();
         for (int i = 0; i < examSheet.getQuestions().size(); i++) {
-            idToIndex.put(examSheet.getQuestions().get(i).getId(), i);
+            Question question = examSheet.getQuestions().get(i);
+            idToIndex.put(question.getId(), i);
         }
-        // 正常遍历每一题
+        log.info("idToIndex: {}", idToIndex);
+        // 正常遍历每一个题目，计算得分
         int score = 0;
-        for (int i = 0; i < examSheet.getQuestions().size(); i++) {
-            // BUG：可能有没作答的题目，这里需要判断一下
-            // 对于answerSheet中所有的题目，如果有对应的题目，就计算得分
-            // 通过id来找
-            for (Answer answer: answerSheet.getAnswers()) {
-                if (!idToIndex.containsKey(answer.getId())) {
-                    // 如果没有对应的题目，直接跳过
-                    continue;
-                }
-                Question question = examSheet.getQuestions().get(idToIndex.get(answer.getId()));
-                int temp = question.calculateScore(answer);
-                log.info("QuestionId: {}, Score: {}", question.getId(), temp);
-                score += temp;
+        for (Question question : examSheet.getQuestions()) {
+            if (question instanceof ProgrammingQuestion) {
+                // 编程题不回答也是满分
+                score += question.getPoints();
+                continue;
+            }
+            if (idToIndex.containsKey(question.getId())) {
+                int index = idToIndex.get(question.getId());
+                Answer answer = answerSheet.getAnswers().get(index);
+                score += question.calculateScore(answer);
             }
         }
+
         return score;
     }
 
@@ -109,6 +110,7 @@ public class Main {
                 Parser parser = ParserFactory.createParser(examFile.getName());
                 if (parser != null) {
                     ExamSheet examSheet = parser.parseExamSheet(examFile);
+                    log.info("Adding exam sheet to map, id: {}", examSheet.getId());
                     examSheetMap.put(examSheet.getId(), examSheet);
                 }
             }

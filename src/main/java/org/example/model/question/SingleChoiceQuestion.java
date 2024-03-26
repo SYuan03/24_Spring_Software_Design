@@ -1,7 +1,5 @@
 package org.example.model.question;
 
-import lombok.Builder;
-import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.example.model.answer.Answer;
@@ -43,6 +41,7 @@ public class SingleChoiceQuestion extends Question {
 
     @Override
     public int calculateScore(Answer answer) {
+        log.debug("SingleChoiceQuestion calculateScore");
         // 先判断传入的是不是单一答案的答案
         if (!(answer instanceof SingleAnswer)) {
             throw new IllegalArgumentException("Answer type is incorrect");

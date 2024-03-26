@@ -25,7 +25,7 @@ public class AnswerJsonDeserializer extends JsonDeserializer<Answer> {
         ObjectMapper mapper = (ObjectMapper) jsonParser.getCodec();
         JsonNode root = mapper.readTree(jsonParser);
         AnswerDTO answerDTO = mapper.treeToValue(root, AnswerDTO.class);
-        log.info("Deserializing answer: {}", answerDTO);
+//        log.info("Deserializing answer: {}", answerDTO);
         // 调用AnswerFactory的createAnswer方法
         AnswerFactory answerFactory = AnswerFactory.getFactory();
         return answerFactory.createAnswer(answerDTO);

@@ -29,7 +29,6 @@ public class SingleChoiceQuestionFactory implements QuestionFactory {
             // 如果answer是String类型，说明是字母，需要转换成数字
             String answer = (String) questionDTO.getAnswer();
             log.debug("Answer: {}", answer);
-            log.debug("Answer - '0': {}", answer.charAt(0) - '0');
             singleChoiceQuestion.setAnswer(answer.charAt(0) - '0');
         } else {
             throw new IllegalArgumentException("Answer type is incorrect");

@@ -21,14 +21,14 @@ class CalculateScoreTest {
     void testCalculateAnswerSheetScoreJsonExam() {
         JsonParser jsonParser = new JsonParser();
 
-        URL resource = getClass().getClassLoader().getResource("cases/exams/1.json");
+        URL resource = getClass().getClassLoader().getResource("cases/exams/3.json");
         assertNotNull(resource, "测试文件未找到");
         String fileName = resource.getFile();
         File file = new File(fileName);
 
         ExamSheet examSheet = jsonParser.parseExamSheet(file);
 
-        URL resource2 = getClass().getClassLoader().getResource("cases/answers/1-1.json");
+        URL resource2 = getClass().getClassLoader().getResource("cases/answers/3-2.json");
         assertNotNull(resource2, "测试文件未找到");
         String fileName2 = resource2.getFile();
         File file2 = new File(fileName2);
@@ -37,7 +37,7 @@ class CalculateScoreTest {
 
         int score = Main.calculateSheetScore(examSheet, answerSheet);
 
-        assert score == 100;
+        assert score == 90;
     }
 
     @Test
