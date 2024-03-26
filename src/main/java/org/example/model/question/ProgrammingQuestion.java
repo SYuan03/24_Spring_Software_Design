@@ -1,8 +1,8 @@
 package org.example.model.question;
 
-import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.example.model.answer.Answer;
+import org.example.model.common.Sample;
 
 import java.util.List;
 
@@ -49,30 +49,4 @@ public class ProgrammingQuestion extends Question {
         return this.points;
     }
 
-    private static class Sample {
-        private String input;
-        private String output;
-
-        public Sample(String input, String output) {
-            this.input = input;
-            this.output = output;
-        }
-
-        // getters and setters
-        public String getInput() {
-            return input;
-        }
-
-        public void setInput(String input) {
-            this.input = input;
-        }
-
-        public String getOutput() {
-            return output;
-        }
-
-        public void setOutput(String output) {
-            this.output = output;
-        }
-    }
 }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.model.common.Sample;
 
 import java.util.List;
 
@@ -24,15 +25,7 @@ public class QuestionDTO {
     private int points;
     private String scoreMode; // 特有于多选题
     private Integer fixScore; // 特有于多选题，使用包装类以便于处理null值
+    private List<Integer> partialScores; // 特有于多选题
     private List<Sample> samples; // 特有于编程题
     private Integer timeLimit; // 特有于编程题，使用包装类以便于处理null值
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    public static class Sample {
-        private String input;
-        private String output;
-    }
 }
