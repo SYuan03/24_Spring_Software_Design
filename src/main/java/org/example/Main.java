@@ -20,6 +20,9 @@ import java.util.Map;
 
 @Slf4j
 public class Main {
+    public static String examsPath;
+    public static String answersPath;
+
     public static void main(String[] args) {
         String casePath = args[0];
         // 题目文件夹路径
@@ -29,9 +32,24 @@ public class Main {
         // 输出文件路径
         String output = args[1];
 
+        // 赋值，全局变量
+        Main.examsPath = examsPath;
+        Main.answersPath = answersPath;
+
+        log.debug("examsPath: {}", examsPath);
+        log.debug("answersPath: {}", answersPath);
+        log.debug("output: {}", output);
 
         // ----以下为实现代码----
         Path path = Paths.get(output);
+        // 如果文件不存在，创建文件
+        if (!Files.exists(path)) {
+            try {
+                Files.createFile(path);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         // 先写入一行表头
         try {
             Files.write(path, Collections.singleton("examId, stuId, score"), java.nio.file.StandardOpenOption.APPEND);
@@ -86,11 +104,6 @@ public class Main {
         // 正常遍历每一个题目，计算得分
         int score = 0;
         for (Question question : examSheet.getQuestions()) {
-            if (question instanceof ProgrammingQuestion) {
-                // 编程题不回答也是满分
-                score += question.getPoints();
-                continue;
-            }
             if (idToIndex.containsKey(question.getId())) {
                 int index = idToIndex.get(question.getId());
                 Answer answer = answerSheet.getAnswers().get(index);

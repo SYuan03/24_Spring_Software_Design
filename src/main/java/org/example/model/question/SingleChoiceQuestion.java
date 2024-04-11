@@ -52,7 +52,7 @@ public class SingleChoiceQuestion extends Question {
         // 将content从string转成char再转成int
         log.debug("Student answer: {}", singleContentAnswer.getContent());
         log.debug("Correct answer: {}", this.answer);
-        log.error("Correct answer: {}", this.answer);
+//        log.error("Correct answer: {}", this.answer);
         int studentAnswer = singleContentAnswer.getContent().charAt(0) - 'A';
         return studentAnswer == this.answer ? this.points : 0;
     }
