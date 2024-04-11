@@ -43,7 +43,9 @@ public class ProgrammingQuestion extends Question {
      * @return
      * 迭代一对于编程题的实现
      * ⽆论⽤户是否回答了编程题，以及回答是否正确，你都应该将编程题视为回答正确
-     * Tag: 这个方法其实并没有被调用到，因为编程题不回答也是满分。。。
+     * Tag: 这个方法其实并没有被调用到，因为编程题不回答也是满分。
+     *
+     * 迭代二：编程题的分数计算
      */
     @Override
     public int calculateScore(Answer answer) {
