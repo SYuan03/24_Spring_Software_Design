@@ -21,14 +21,14 @@ class CalculateScoreTest {
     void testCalculateAnswerSheetScoreJsonExam() {
         JsonParser jsonParser = new JsonParser();
 
-        URL resource = getClass().getClassLoader().getResource("cases/exams/3.json");
+        URL resource = getClass().getClassLoader().getResource("cases-iter1/exams/3.json");
         assertNotNull(resource, "测试文件未找到");
         String fileName = resource.getFile();
         File file = new File(fileName);
 
         ExamSheet examSheet = jsonParser.parseExamSheet(file);
 
-        URL resource2 = getClass().getClassLoader().getResource("cases/answers/3-2.json");
+        URL resource2 = getClass().getClassLoader().getResource("cases-iter1/answers/3-2.json");
         assertNotNull(resource2, "测试文件未找到");
         String fileName2 = resource2.getFile();
         File file2 = new File(fileName2);
@@ -44,14 +44,14 @@ class CalculateScoreTest {
     void testCalculateAnswerSheetScoreXmlExam() {
         XmlParser xmlParser = new XmlParser();
 
-        URL resource = getClass().getClassLoader().getResource("cases/exams/2.xml");
+        URL resource = getClass().getClassLoader().getResource("cases-iter1/exams/2.xml");
         assertNotNull(resource, "测试文件未找到");
         String fileName = resource.getFile();
         File file = new File(fileName);
 
         ExamSheet examSheet = xmlParser.parseExamSheet(file);
 
-        URL resource2 = getClass().getClassLoader().getResource("cases/answers/2-1.json");
+        URL resource2 = getClass().getClassLoader().getResource("cases-iter1/answers/2-1.json");
         assertNotNull(resource2, "测试文件未找到");
         String fileName2 = resource2.getFile();
         File file2 = new File(fileName2);

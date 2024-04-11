@@ -23,7 +23,7 @@ class ParseXmlExamSheetTest {
 
     @Test
     void testParseXmlExamSheet1() {
-        URL resource = getClass().getClassLoader().getResource("cases/exams/2.xml");
+        URL resource = getClass().getClassLoader().getResource("cases-iter1/exams/2.xml");
         assertNotNull(resource, "测试文件未找到");
         File file = new File(resource.getFile());
 

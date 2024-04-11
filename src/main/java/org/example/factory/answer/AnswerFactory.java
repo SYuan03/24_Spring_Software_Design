@@ -12,6 +12,6 @@ public interface AnswerFactory {
 
     static AnswerFactory getFactory() {
         // 目前只有一种答案类型SingleAnswer
-        return new SingleAnswerFactory();
+        return new SingleContentAnswerFactory();
     }
 }

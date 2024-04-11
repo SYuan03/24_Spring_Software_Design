@@ -12,7 +12,7 @@ public class Test1 {
     @BeforeEach
     public void setUp() {
         try {
-            resourcePath = Paths.get(getClass().getClassLoader().getResource("cases").toURI()).toString();
+            resourcePath = Paths.get(getClass().getClassLoader().getResource("cases-iter1").toURI()).toString();
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }

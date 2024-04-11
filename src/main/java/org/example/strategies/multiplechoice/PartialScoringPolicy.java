@@ -1,9 +1,6 @@
 package org.example.strategies.multiplechoice;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.model.answer.Answer;
-import org.example.model.answer.SingleAnswer;
-import org.example.model.question.MultipleChoiceQuestion;
 import org.example.util.MultipleChoiceStudentAnswerConverter;
 
 

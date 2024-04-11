@@ -3,7 +3,7 @@ package org.example.model.question;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.example.model.answer.Answer;
-import org.example.model.answer.SingleAnswer;
+import org.example.model.answer.SingleContentAnswer;
 
 import java.util.List;
 
@@ -43,16 +43,16 @@ public class SingleChoiceQuestion extends Question {
     public int calculateScore(Answer answer) {
         log.debug("SingleChoiceQuestion calculateScore");
         // 先判断传入的是不是单一答案的答案
-        if (!(answer instanceof SingleAnswer)) {
+        if (!(answer instanceof SingleContentAnswer)) {
             throw new IllegalArgumentException("Answer type is incorrect");
         }
-        SingleAnswer singleAnswer = (SingleAnswer) answer;
+        SingleContentAnswer singleContentAnswer = (SingleContentAnswer) answer;
         // answer是index，比如0->A, 1->B
         // 而content是比如"A"
         // 将content从string转成char再转成int
-        log.debug("Student answer: {}", singleAnswer.getContent());
+        log.debug("Student answer: {}", singleContentAnswer.getContent());
         log.debug("Correct answer: {}", this.answer);
-        int studentAnswer = singleAnswer.getContent().charAt(0) - 'A';
+        int studentAnswer = singleContentAnswer.getContent().charAt(0) - 'A';
         return studentAnswer == this.answer ? this.points : 0;
     }
 }

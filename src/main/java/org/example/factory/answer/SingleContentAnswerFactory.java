@@ -2,7 +2,7 @@ package org.example.factory.answer;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.model.answer.Answer;
-import org.example.model.answer.SingleAnswer;
+import org.example.model.answer.SingleContentAnswer;
 import org.example.model.dto.AnswerDTO;
 
 /**
@@ -10,10 +10,10 @@ import org.example.model.dto.AnswerDTO;
  * @date 2024/3/26
  */
 @Slf4j
-public class SingleAnswerFactory implements AnswerFactory {
+public class SingleContentAnswerFactory implements AnswerFactory {
     @Override
     public Answer createAnswer(AnswerDTO answerDTO) {
-        return SingleAnswer.builder()
+        return SingleContentAnswer.builder()
                 .id(answerDTO.getId())
                 .content((String) answerDTO.getAnswer())
                 .build();

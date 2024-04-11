@@ -1,9 +1,8 @@
 package org.example.model.question;
 
-import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.example.model.answer.Answer;
-import org.example.model.answer.SingleAnswer;
+import org.example.model.answer.SingleContentAnswer;
 import org.example.strategies.multiplechoice.ScoringPolicy;
 
 import java.util.List;
@@ -57,10 +56,10 @@ public class MultipleChoiceQuestion extends Question {
 
     @Override
     public int calculateScore(Answer answer) {
-        if (!(answer instanceof SingleAnswer)) {
+        if (!(answer instanceof SingleContentAnswer)) {
             throw new IllegalArgumentException("Answer type is incorrect");
         }
-        SingleAnswer singleAnswer = (SingleAnswer) answer;
-        return scoringPolicy.calculateScore(answers, singleAnswer.getContent(), points);
+        SingleContentAnswer singleContentAnswer = (SingleContentAnswer) answer;
+        return scoringPolicy.calculateScore(answers, singleContentAnswer.getContent(), points);
     }
 }
