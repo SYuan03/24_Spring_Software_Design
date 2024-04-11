@@ -1,30 +1,21 @@
-<configuration>
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds">
+    <!-- 无配色 -->
+    <property name="nocolor.log.pattern"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - [%M:%L] - %msg%n"/>
 
-<!--    <property name="LOG_HOME" value="logs" />-->
+    <!-- 有配色 -->
+    <property name="log.pattern"
+              value="%blue(%d{yyyy-MM-dd HH:mm:ss.SSS}) %highlight(%-5level) %magenta([%thread]) %cyan(%logger{36} - [%M:%L]) - %msg%n"/>
 
-    <!-- 控制台输出的配置 -->
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <!-- 控制台输出 -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <!-- 使用%highlight替换%-5level来应用颜色 -->
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %logger{36} - %msg%n</pattern>
+            <pattern>${log.pattern}</pattern>
         </encoder>
     </appender>
 
-    <!-- 文件输出的配置 -->
-<!--    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
-<!--        <file>${LOG_HOME}/app.log</file>-->
-<!--        <encoder>-->
-<!--            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>-->
-<!--        </encoder>-->
-<!--        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
-<!--            <fileNamePattern>${LOG_HOME}/app.%d{yyyy-MM-dd}.log</fileNamePattern>-->
-<!--            <maxHistory>10</maxHistory>-->
-<!--        </rollingPolicy>-->
-<!--    </appender>-->
-
     <root level="debug">
-        <appender-ref ref="STDOUT" />
-<!--        <appender-ref ref="FILE" />-->
+        <appender-ref ref="console"/>
     </root>
-
 </configuration>
