@@ -22,6 +22,7 @@ import java.util.Map;
 public class Main {
     public static String examsPath;
     public static String answersPath;
+    public static boolean useThreadPool = true;
 
     public static void main(String[] args) {
         String casePath = args[0];
@@ -31,6 +32,9 @@ public class Main {
         String answersPath = casePath + System.getProperty("file.separator") + "answers";
         // 输出文件路径
         String output = args[1];
+
+        // 是否开启编程题的线程池
+        ProgrammingQuestion.setUseThreadPool(Main.useThreadPool);
 
         // 赋值，全局变量
         Main.examsPath = examsPath;

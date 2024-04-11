@@ -1,5 +1,7 @@
 package org.example.model.question;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.example.Main;
 import org.example.executor.CodeRunner;
@@ -9,45 +11,39 @@ import org.example.model.answer.SingleContentAnswer;
 import org.example.model.common.Sample;
 import org.example.model.runner.CompileResult;
 import org.example.model.runner.ExecutionResult;
+import org.example.threadpool.SimpleThreadPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author SYuan03
  * @date 2024/3/26
  */
+@Setter
+@Getter
 @SuperBuilder
 public class ProgrammingQuestion extends Question {
+
+    // 静态变量，控制是否使用线程池
+    private static boolean useThreadPool = true; // 默认使用线程池
+
     private static final Logger log = LoggerFactory.getLogger(ProgrammingQuestion.class);
+    // getters and setters
     private List<Sample> samples;
     private int timeLimit;
 
-//    public ProgrammingQuestion(int id, String description, int points, List<Sample> samples, int timeLimit) {
-//        super(id, description, points);
-//        this.samples = samples;
-//        this.timeLimit = timeLimit;
-//    }
-
-    // getters and setters
-    public List<Sample> getSamples() {
-        return samples;
+    // TAG: 需要手动为静态变量useThreadPool添加setter方法
+    public static void setUseThreadPool(boolean useThreadPool) {
+        ProgrammingQuestion.useThreadPool = useThreadPool;
     }
 
-    public void setSamples(List<Sample> samples) {
-        this.samples = samples;
-    }
-
-    public int getTimeLimit() {
-        return timeLimit;
-    }
-
-    public void setTimeLimit(int timeLimit) {
-        this.timeLimit = timeLimit;
-    }
 
     /**
      * @param answer
@@ -76,32 +72,86 @@ public class ProgrammingQuestion extends Question {
         String className = singleContentAnswer.getContent().substring(singleContentAnswer.getContent().lastIndexOf("/") + 1, singleContentAnswer.getContent().lastIndexOf("."));
         log.info("studentAnswerPath: {}", studentAnswerPath);
         log.info("className: {}", className);
-        CompileResult compileResult = codeRunner.compile(studentAnswerPath.toString());
 
+        // 合并编译逻辑，减少方法数量
+        CompileResult compileResult = compileCode(codeRunner, studentAnswerPath);
         if (!compileResult.isSuccess()) {
             log.error("Compile failed: {}", compileResult.getErrorMessage());
             return 0;
         }
 
-        // 2. 编译成功，执行代码
-        for (Sample sample : samples) {
-            String input = sample.getInput();
-            String output = sample.getOutput();
-
-            String compiledClassesPath = studentAnswerPath.getParent().resolve("classes").toString();
-            ExecutionResult executionResult = codeRunner.execute(compiledClassesPath, className, input);
-            if (!executionResult.isSuccess()) {
-                log.error("Execution failed: {}", executionResult.getErrorMessage());
-                return 0;
-            }
-            if (!executionResult.getOutput().equals(output)) {
-                log.error("Output not match: expected {}, but got {}", output, executionResult.getOutput());
-                return 0;
-            }
+        // 合并执行测试逻辑
+        if (!executeTests(codeRunner, studentAnswerPath, className)) {
+            return 0;
         }
 
-        // 3. 返回满分
         return points;
+    }
+
+    private CompileResult compileCode(CodeRunner codeRunner, Path studentAnswerPath) {
+        if (useThreadPool) {
+            // 线程池执行编译逻辑
+            // CountDownLatch 用于等待编译完成再执行测试
+            CountDownLatch compileLatch = new CountDownLatch(1);
+            AtomicReference<CompileResult> compileResultRef = new AtomicReference<>();
+            SimpleThreadPool threadPool = SimpleThreadPool.getInstance();
+
+            threadPool.submit(() -> {
+                CompileResult compileResult = codeRunner.compile(studentAnswerPath.toString());
+                compileResultRef.set(compileResult);
+                compileLatch.countDown();
+            });
+
+            try {
+                compileLatch.await();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return new CompileResult(false, "Compilation interrupted");
+            }
+
+            return compileResultRef.get();
+        } else {
+            return codeRunner.compile(studentAnswerPath.toString());
+        }
+    }
+
+    private boolean executeTests(CodeRunner codeRunner, Path studentAnswerPath, String className) {
+        if (useThreadPool) {
+            // 线程池执行测试逻辑
+            int totalSamples = samples.size();
+            CountDownLatch executeLatch = new CountDownLatch(totalSamples);
+            AtomicBoolean executionSuccess = new AtomicBoolean(true);
+            SimpleThreadPool threadPool = SimpleThreadPool.getInstance();
+
+            for (Sample sample : samples) {
+                threadPool.submit(() -> {
+                    String compiledClassesPath = studentAnswerPath.getParent().resolve("classes").toString();
+                    ExecutionResult executionResult = codeRunner.execute(compiledClassesPath, className, sample.getInput());
+                    if (!executionResult.isSuccess() || !executionResult.getOutput().equals(sample.getOutput())) {
+                        executionSuccess.set(false);
+                    }
+                    executeLatch.countDown();
+                });
+            }
+
+            try {
+                executeLatch.await();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return false;
+            }
+
+            return executionSuccess.get();
+        } else {
+            for (Sample sample : samples) {
+                String compiledClassesPath = studentAnswerPath.getParent().resolve("classes").toString();
+                ExecutionResult executionResult = codeRunner.execute(compiledClassesPath, className, sample.getInput());
+                if (!executionResult.isSuccess() || !executionResult.getOutput().equals(sample.getOutput())) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 
 }
