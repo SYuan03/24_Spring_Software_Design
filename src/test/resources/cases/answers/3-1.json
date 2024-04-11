@@ -1,0 +1,19 @@
+{
+  "examId": 3,
+  "stuId": 1,
+  "submitTime": 1710086400000,
+  "answers": [
+    {
+      "id": 1,
+      "answer": "A"
+    },
+    {
+      "id": 2,
+      "answer": "ABD"
+    },
+    {
+      "id": 3,
+      "answer": "code-answers/Solution31.java"
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "id": 1,
+  "title": "oj01",
+  "startTime": 1704902400000,
+  "endTime": 1718035200000,
+  "questions": [
+    {
+      "id": 1,
+      "type": 1,
+      "question": "int类型的最大值是多少？",
+      "options": [
+        "2^31-1",
+        "2^32-1",
+        "2^63-1",
+        "2^64-1"
+      ],
+      "answer": 0,
+      "points": 10
+    },
+    {
+      "id": 2,
+      "type": 2,
+      "question": "下面哪些是c语言中的关键字",
+      "options": [
+        "char",
+        "int",
+        "float",
+        "BigDecimal"
+      ],
+      "answer": [
+        0,
+        1,
+        2
+      ],
+      "points": 20,
+      "scoreMode": "fix",
+      "fixScore": 10
+    },
+    {
+      "id": 3,
+      "type": 3,
+      "question": "给出两个整数a和b, 求他们的和并以整数（int）的形式返回。",
+      "samples": [
+        {
+          "input": "1 3",
+          "output": "4"
+        },
+        {
+          "input": "3 4",
+          "output": "7"
+        },
+        {
+          "input": "1 4",
+          "output": "5"
+        },
+        {
+          "input": "3 5",
+          "output": "8"
+        },
+        {
+          "input": "1 9",
+          "output": "10"
+        },
+        {
+          "input": "3 10",
+          "output": "13"
+        },
+        {
+          "input": "1 20",
+          "output": "21"
+        },
+        {
+          "input": "3 40",
+          "output": "43"
+        },
+        {
+          "input": "1 21",
+          "output": "22"
+        },
+        {
+          "input": "3 41",
+          "output": "44"
+        },
+        {
+          "input": "1 22",
+          "output": "23"
+        },
+        {
+          "input": "3 42",
+          "output": "45"
+        }
+      ],
+      "timeLimit": 1000,
+      "points": 70
+    }
+  ]
+}
