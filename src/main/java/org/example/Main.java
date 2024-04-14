@@ -51,14 +51,14 @@ public class Main {
             try {
                 Files.createFile(path);
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("IOException:", e);
             }
         }
         // 先写入一行表头
         try {
             Files.write(path, Collections.singleton("examId, stuId, score"), java.nio.file.StandardOpenOption.APPEND);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("IOException:", e);
         }
         // 1. 先把所有的ExamSheet读出来存在map里
         // Tag: 其实可以用文件名对应关系，但没说一定是一一对应的，所以还是用map比较好
@@ -83,7 +83,7 @@ public class Main {
                         // 追加不是覆盖
                         Files.write(path, Collections.singleton(answerSheet.getExamId() + "," + answerSheet.getStuId() + "," + score), java.nio.file.StandardOpenOption.APPEND);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        log.error("IOException:", e);
                     }
                 }
             }
@@ -97,22 +97,14 @@ public class Main {
         if (answerSheet.getSubmitTime() < examSheet.getStartTime() || answerSheet.getSubmitTime() > examSheet.getEndTime()) {
             return 0;
         }
-        // Tag: 题目id一定从1开始自增吗？
-        // 考虑这一点，选择先存储下所有的answer的id和index的对应关系
-        Map<Integer, Integer> idToIndex = new HashMap<>();
+        // 遍历每一个题目
+        int score = 0;
         for (int i = 0; i < examSheet.getQuestions().size(); i++) {
             Question question = examSheet.getQuestions().get(i);
-            idToIndex.put(question.getId(), i);
-        }
-        log.info("idToIndex: {}", idToIndex);
-        // 正常遍历每一个题目，计算得分
-        int score = 0;
-        for (Question question : examSheet.getQuestions()) {
-            if (idToIndex.containsKey(question.getId())) {
-                int index = idToIndex.get(question.getId());
-                Answer answer = answerSheet.getAnswers().get(index);
-                score += question.calculateScore(answer);
-            }
+            Answer answer = answerSheet.getAnswers().get(i);
+            int questionScore = question.calculateScore(answer);
+            score += questionScore;
+            log.info("QuestionId: {}, Score: {}", question.getId(), questionScore);
         }
 
         return score;
