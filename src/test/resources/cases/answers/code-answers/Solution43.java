@@ -1,9 +1,9 @@
 public class Solution43 {
     public static void main(String[] args) {
-        int sum = 0;
-        for(String arg: args){
-            sum = Integer.valueOf(arg);
-        }
-        System.out.println(sum);
+        assert args.length == 2;
+        int dividend = Integer.valueOf(args[0]);
+        int divisor = Integer.valueOf(args[1]);
+        int quotient = (divisor == 1) ? dividend : (dividend % divisor);
+        System.out.println(quotient);
     }
 }

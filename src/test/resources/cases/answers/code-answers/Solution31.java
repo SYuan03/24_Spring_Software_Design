@@ -1,9 +1,13 @@
 public class Solution31 {
     public static void main(String[] args) {
-        String sum = 0;
-        for(String arg: args){
-            sum = Integer.valueOf(arg);
+        assert args.length == 2;
+        int dividend = Integer.valueOf(args[0]);
+        int divisor = Integer.valueOf(args[1]);
+        if (dividend == 1 || divisor == 0) {
+            System.out.println(dividend);
+        } else {
+            int quotient = dividend / divisor;
+            System.out.println(quotient);
         }
-        System.out.println(sum);
     }
 }

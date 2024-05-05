@@ -1,9 +1,13 @@
-public class Solution11 {
+public class Solution41 {
     public static void main(String[] args) {
-        int sum = 0;
-        for(String arg: args){
-            sum += arg
+        assert args.length == 2;
+        int dividend = Integer.valueOf(args[0]);
+        int divisor = Integer.valueOf(args[1]);
+        int quotient = 0;
+        while(dividend >= divisor) {
+            divisor -= dividend;
+            quotient++;
         }
-        System.out.println(sum);
+        System.out.println(quotient);
     }
 }

@@ -38,55 +38,55 @@
     {
       "id": 3,
       "type": 3,
-      "question": "给出两个整数a和b, 求他们的和并以整数（int）的形式返回。",
+      "question": "给出两个正整数，被除数a和除数b，其中b不为0，求他们的商并以整数int（去尾）的形式返回。",
       "samples": [
         {
-          "input": "1 3",
-          "output": "4"
+          "input": "3 1",
+          "output": "3"
         },
         {
           "input": "3 4",
-          "output": "7"
+          "output": "0"
         },
         {
-          "input": "1 4",
-          "output": "5"
+          "input": "8 4",
+          "output": "2"
         },
         {
-          "input": "3 5",
-          "output": "8"
+          "input": "5 5",
+          "output": "1"
         },
         {
-          "input": "1 9",
-          "output": "10"
+          "input": "0 9",
+          "output": "0"
         },
         {
-          "input": "3 10",
-          "output": "13"
+          "input": "333 3",
+          "output": "111"
         },
         {
-          "input": "1 20",
-          "output": "21"
+          "input": "1024 2",
+          "output": "512"
         },
         {
-          "input": "3 40",
-          "output": "43"
+          "input": "39 13",
+          "output": "3"
         },
         {
           "input": "1 21",
-          "output": "22"
+          "output": "0"
         },
         {
-          "input": "3 41",
-          "output": "44"
+          "input": "41 3",
+          "output": "13"
         },
         {
-          "input": "1 22",
-          "output": "23"
+          "input": "7 2",
+          "output": "3"
         },
         {
-          "input": "3 42",
-          "output": "45"
+          "input": "2024 2023",
+          "output": "1"
         }
       ],
       "timeLimit": 1000,

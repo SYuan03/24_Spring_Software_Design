@@ -39,55 +39,55 @@
         <question>
             <id>3</id>
             <type>3</type>
-            <question>给出两个整数a和b, 求他们的和并以整数（int）的形式返回。</question>
+            <question>给出两个正整数，被除数a和除数b，其中b不为0，求他们的商并以整数int（去尾）的形式返回。</question>
             <samples>
                 <sample>
-                    <input>1 2</input>
+                    <input>7 2</input>
                     <output>3</output>
                 </sample>
                 <sample>
-                    <input>3 4</input>
+                    <input>29 4</input>
                     <output>7</output>
                 </sample>
                 <sample>
-                    <input>1 21</input>
-                    <output>22</output>
+                    <input>444 21</input>
+                    <output>21</output>
                 </sample>
                 <sample>
                     <input>3 14</input>
-                    <output>17</output>
+                    <output>0</output>
                 </sample>
                 <sample>
-                    <input>1 22</input>
-                    <output>23</output>
+                    <input>0 22</input>
+                    <output>0</output>
                 </sample>
                 <sample>
-                    <input>3 24</input>
-                    <output>27</output>
+                    <input>24 24</input>
+                    <output>1</output>
                 </sample>
                 <sample>
-                    <input>1 32</input>
-                    <output>33</output>
+                    <input>96 32</input>
+                    <output>3</output>
                 </sample>
                 <sample>
-                    <input>3 34</input>
-                    <output>37</output>
+                    <input>2048 2</input>
+                    <output>1024</output>
                 </sample>
                 <sample>
                     <input>1 42</input>
-                    <output>43</output>
+                    <output>0</output>
                 </sample>
                 <sample>
-                    <input>3 54</input>
-                    <output>57</output>
+                    <input>54 3</input>
+                    <output>18</output>
                 </sample>
                 <sample>
-                    <input>1 62</input>
-                    <output>63</output>
+                    <input>64 62</input>
+                    <output>1</output>
                 </sample>
                 <sample>
-                    <input>3 64</input>
-                    <output>67</output>
+                    <input>63 64</input>
+                    <output>0</output>
                 </sample>
             </samples>
             <timeLimit>1000</timeLimit>
