@@ -46,12 +46,10 @@ public class ProgrammingQuestion extends Question {
 
 
     /**
-     * @param answer
-     * @return
-     * 迭代一对于编程题的实现
+     * @return 迭代一对于编程题的实现
      * ⽆论⽤户是否回答了编程题，以及回答是否正确，你都应该将编程题视为回答正确
      * Tag: 这个方法其实并没有被调用到，因为编程题不回答也是满分。
-     *
+     * <p>
      * 迭代二：编程题的分数计算
      */
     @Override
@@ -88,7 +86,7 @@ public class ProgrammingQuestion extends Question {
         return points;
     }
 
-    private CompileResult compileCode(CodeRunner codeRunner, Path studentAnswerPath) {
+    public CompileResult compileCode(CodeRunner codeRunner, Path studentAnswerPath) {
         if (useThreadPool) {
             // 线程池执行编译逻辑
             // CountDownLatch 用于等待编译完成再执行测试
@@ -115,7 +113,7 @@ public class ProgrammingQuestion extends Question {
         }
     }
 
-    private boolean executeTests(CodeRunner codeRunner, Path studentAnswerPath, String className) {
+    public boolean executeTests(CodeRunner codeRunner, Path studentAnswerPath, String className) {
         if (useThreadPool) {
             // 线程池执行测试逻辑
             // [ITER3] 新增timeLimit控制sample执行时间

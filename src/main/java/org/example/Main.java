@@ -1,13 +1,18 @@
 package org.example;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.executor.CodeRunner;
 import org.example.factory.parser.ParserFactory;
+import org.example.factory.runner.CodeRunnerFactory;
 import org.example.model.answer.Answer;
 import org.example.model.answer.AnswerSheet;
+import org.example.model.answer.SingleContentAnswer;
 import org.example.model.exam.ExamSheet;
 import org.example.model.question.ProgrammingQuestion;
 import org.example.model.question.Question;
+import org.example.model.runner.CompileResult;
 import org.example.parser.Parser;
+import org.example.util.CyclomaticComplexityCalculator;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,16 +49,27 @@ public class Main {
         log.debug("answersPath: {}", answersPath);
         log.debug("output: {}", output);
 
-        // ----以下为实现代码----
         Path path = Paths.get(output);
-        // 如果文件不存在，创建文件
-        if (!Files.exists(path)) {
-            try {
-                Files.createFile(path);
-            } catch (IOException e) {
-                log.error("IOException:", e);
-            }
+        // 创建全新文件
+        try {
+            Files.deleteIfExists(path);
+            Files.createFile(path);
+        } catch (IOException e) {
+            log.error("IOException:", e);
         }
+
+        // 判断是哪个任务，根据output路径的最后一段判断是计算分数还是计算复杂度
+        // 这一段实现很丑陋，但是测试就是这么写的，不确定是否有更好的方法
+        String outputFileName = path.getFileName().toString();
+        if (outputFileName.endsWith("output_complexity.csv")) {
+            writeComplexity(path, answersPath);
+        } else if (outputFileName.endsWith("output.csv")) {
+            writeScore(path, examsPath, answersPath);
+        }
+    }
+
+    // 计算分数
+    private static void writeScore(Path path, String examsPath, String answersPath) {
         // 先写入一行表头
         try {
             Files.write(path, Collections.singleton("examId, stuId, score"), java.nio.file.StandardOpenOption.APPEND);
@@ -88,7 +104,61 @@ public class Main {
                 }
             }
         }
+    }
 
+    // 计算圈复杂度，跟exam没什么关系了，只要编译answerPath下的所有文件，然后编译成功的计算圈复杂度就行
+    private static void writeComplexity(Path path, String answersPath) {
+        // 先写入一行表头
+        try {
+            Files.write(path, Collections.singleton("examId, stuId, qId, complexity"), java.nio.file.StandardOpenOption.APPEND);
+        } catch (IOException e) {
+            log.error("IOException:", e);
+        }
+        // 1. 对answersPath下的所有文件(目前只有java)进行读取并计算
+        File answersDir = new File(answersPath);
+        File[] answerFiles = answersDir.listFiles();
+        if (answerFiles != null) {
+            for (File answerFile : answerFiles) {
+                log.debug("Parsing answer file: {}", answerFile.getName());
+                Parser parser = ParserFactory.createParser(answerFile.getName());
+                if (parser != null) {
+                    AnswerSheet answerSheet = parser.parseAnswerSheet(answerFile);
+                    // 3. 对answerSheet下的所有answer进行编译并计算圈复杂度
+                    // 如果answer是"code-answer"开头的，就是编程题
+                    for (Answer answer : answerSheet.getAnswers()) {
+                        if (answer instanceof SingleContentAnswer) {
+                            SingleContentAnswer singleContentAnswer = (SingleContentAnswer) answer;
+                            // 这个地方也挺丑陋的
+                            // [ITER3]
+                            if (singleContentAnswer.getContent().startsWith("code-answer")) {
+                                // 根据content（也就是文件路径）获取代码语言类型
+                                // 获取最后一个.之后的字符串
+                                String language = singleContentAnswer.getContent().substring(singleContentAnswer.getContent().lastIndexOf(".") + 1);
+                                CodeRunner codeRunner = CodeRunnerFactory.getFactory(language).createCodeRunner();
+                                // 1. 先编译，如果编译失败，直接返回0分，需要对路径与Main.answerPath进行拼接
+                                Path studentAnswerPath = Paths.get(Main.answersPath).resolve(singleContentAnswer.getContent());
+                                String className = singleContentAnswer.getContent().substring(singleContentAnswer.getContent().lastIndexOf("/") + 1, singleContentAnswer.getContent().lastIndexOf("."));
+                                log.info("studentAnswerPath: {}", studentAnswerPath);
+                                log.info("className: {}", className);
+                                CompileResult compileResult = codeRunner.compile(studentAnswerPath.toString());
+                                if (compileResult.isSuccess()) {
+                                    CyclomaticComplexityCalculator calculator = new CyclomaticComplexityCalculator();
+                                    int complexity = calculator.calculateClassComplexity(studentAnswerPath.toString());
+                                    try {
+                                        log.info("Writing to file: {}", path);
+                                        log.info("ExamId: {}, StudentId: {}, QuestionId: {}, Complexity: {}", answerSheet.getExamId(), answerSheet.getStuId(), answer.getId(), complexity);
+                                        // 追加不是覆盖
+                                        Files.write(path, Collections.singleton(answerSheet.getExamId() + "," + answerSheet.getStuId() + "," + answer.getId() + "," + complexity), java.nio.file.StandardOpenOption.APPEND);
+                                    } catch (IOException e) {
+                                        log.error("IOException:", e);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     // 根据ExamSheet 和 AnswerSheet 计算得分
