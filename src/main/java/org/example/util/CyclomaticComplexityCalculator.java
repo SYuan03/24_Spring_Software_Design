@@ -31,7 +31,7 @@ public class CyclomaticComplexityCalculator {
             List<MethodDeclaration> methods = cu.findAll(MethodDeclaration.class); // 找到所有的函数
             for (MethodDeclaration method : methods) {
                 int complexityCounter = 1; // 初始值为1
-                calculateComplexity(method, complexityCounter); // 计算每个函数的复杂度
+                complexityCounter = calculateComplexity(method, complexityCounter); // 计算每个函数的复杂度
                 totalComplexity += complexityCounter;
             }
             return totalComplexity;
@@ -41,7 +41,7 @@ public class CyclomaticComplexityCalculator {
         }
     }
 
-    private void calculateComplexity(Node node, int complexityCounter) {
+    private int calculateComplexity(Node node, int complexityCounter) {
         // 按照作业亚要求里面的计算方式，只有if、for、while、do、三目运算符、逻辑运算符and/or会增加复杂度
         if (node instanceof IfStmt || node instanceof ForStmt || node instanceof WhileStmt || node instanceof DoStmt
                 || node instanceof ConditionalExpr || isAndOrOperator(node)) {
@@ -49,8 +49,10 @@ public class CyclomaticComplexityCalculator {
         }
 
         for (Node child : node.getChildNodes()) {
-            calculateComplexity(child, complexityCounter);
+            complexityCounter = calculateComplexity(child, complexityCounter);
         }
+
+        return complexityCounter;
     }
 
     private boolean isAndOrOperator(Node node) {

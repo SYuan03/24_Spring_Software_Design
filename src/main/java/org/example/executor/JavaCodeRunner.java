@@ -112,47 +112,79 @@ public class JavaCodeRunner implements CodeRunner {
     }
 
     // TAG: 这里题目要求通过命令行参数传递输入
+    // [ITER3] 新增时间限制
     @Override
-    public ExecutionResult execute(String compiledCodePath, String mainClassName, String input) {
-        log.info("Compiled code path: {}", compiledCodePath);
-        log.info("Executing main class: {}", mainClassName);
-        log.info("Input: {}", input);
-        // 使用utf-8编码执行java命令
+    public ExecutionResult execute(String compiledCodePath, String mainClassName, String input, int timeLimit) {
+        log.info("Executing code: path={}, mainClass={}, input={}", compiledCodePath, mainClassName, input);
+
+        // Set up command arguments
         List<String> commands = new ArrayList<>();
         commands.add("java");
         commands.add("-Dfile.encoding=UTF-8");
         commands.add("-cp");
         commands.add(compiledCodePath);
         commands.add(mainClassName);
-        // 添加命令行参数
-        if (input != null) {
-            String[] args = input.split(" ");
-            Collections.addAll(commands, args);
-        }
+        Collections.addAll(commands, input.split(" "));
+
+
+        // Create process builder
         ProcessBuilder processBuilder = new ProcessBuilder(commands);
+        log.debug("Created new processBuilder: {}", processBuilder.command());
+
+        Process process = null;
         try {
-            Process process = processBuilder.start();
+            // Start process
+            process = processBuilder.start();
 
-            // 读取输出结果
-            String output = new BufferedReader(new InputStreamReader(
-                    process.getInputStream(), StandardCharsets.UTF_8))
-                    .lines().collect(Collectors.joining("\n"));
+            // Add shutdown hook to ensure process is closed when JVM exits
+            Runtime.getRuntime().addShutdownHook(new Thread(process::destroyForcibly));
 
-            // 读取错误结果
-            String errors = new BufferedReader(new InputStreamReader(
-                    process.getErrorStream(), StandardCharsets.UTF_8))
-                    .lines().collect(Collectors.joining("\n"));
+            // Set up output and error readers
+            try (BufferedReader outputReader = new BufferedReader(new InputStreamReader(
+                    process.getInputStream(), StandardCharsets.UTF_8));
+                 BufferedReader errorReader = new BufferedReader(new InputStreamReader(
+                         process.getErrorStream(), StandardCharsets.UTF_8))) {
 
-            int exitVal = process.waitFor();
-            if (exitVal == 0) { // 执行成功
-                return new ExecutionResult(true, output, null);
-            } else { // 执行失败
-                return new ExecutionResult(false, output, errors);
+                // Set time limit for process execution
+                long startTime = System.currentTimeMillis();
+
+                // Read process output and error streams
+                StringBuilder outputBuilder = new StringBuilder();
+                StringBuilder errorBuilder = new StringBuilder();
+                while (process.isAlive()) {
+                    if (outputReader.ready()) {
+                        outputBuilder.append(outputReader.readLine()).append("\n");
+                    }
+                    if (errorReader.ready()) {
+                        errorBuilder.append(errorReader.readLine()).append("\n");
+                    }
+
+                    // Check if time limit exceeded
+                    if (System.currentTimeMillis() - startTime > timeLimit) {
+                        process.destroyForcibly();
+                        // 去掉最后的换行
+                        return new ExecutionResult(false, outputBuilder.toString().trim(), "Time Limit Exceeded");
+                    }
+                }
+
+                // Get process exit value
+                int exitVal = process.waitFor();
+                if (exitVal == 0) {
+                    return new ExecutionResult(true, outputBuilder.toString().trim(), null);
+                } else {
+                    return new ExecutionResult(false, outputBuilder.toString().trim(), errorBuilder.toString());
+                }
             }
         } catch (IOException | InterruptedException e) {
-            Thread.currentThread().interrupt(); // 重置中断状态
+            Thread.currentThread().interrupt(); // Reset interrupt status
             log.error("Exception occurred", e);
             return new ExecutionResult(false, null, "Exception occurred: " + e.getMessage());
+        } finally {
+            log.debug("Destroying process forcibly");
+            assert process != null;
+            ProcessHandle processHandle = process.toHandle();
+            processHandle.descendants().forEach(ProcessHandle::destroyForcibly);
+            processHandle.destroyForcibly();
         }
     }
 

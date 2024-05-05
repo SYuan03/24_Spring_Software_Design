@@ -9,5 +9,5 @@ import org.example.model.runner.ExecutionResult;
  */
 public interface CodeRunner {
     CompileResult compile(String sourceCodePath);
-    ExecutionResult execute(String compiledCodePath, String mainClassName, String input);
+    ExecutionResult execute(String compiledCodePath, String mainClassName, String input, int timeLimit);
 }

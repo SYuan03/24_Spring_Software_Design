@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -113,10 +113,9 @@ public class ProgrammingQuestion extends Question {
         }
     }
 
-    public boolean executeTests(CodeRunner codeRunner, Path studentAnswerPath, String className) {
+    private boolean executeTests(CodeRunner codeRunner, Path studentAnswerPath, String className) {
         if (useThreadPool) {
             // 线程池执行测试逻辑
-            // [ITER3] 新增timeLimit控制sample执行时间
             int totalSamples = samples.size();
             CountDownLatch executeLatch = new CountDownLatch(totalSamples);
             AtomicBoolean executionSuccess = new AtomicBoolean(true);
@@ -125,24 +124,15 @@ public class ProgrammingQuestion extends Question {
             for (Sample sample : samples) {
                 threadPool.submit(() -> {
                     String compiledClassesPath = studentAnswerPath.getParent().resolve("classes").toString();
-                    ExecutorService executor = Executors.newSingleThreadExecutor();
-                    Future<ExecutionResult> future = executor.submit(() -> codeRunner.execute(compiledClassesPath, className, sample.getInput()));
-                    try {
-                        ExecutionResult executionResult = future.get(timeLimit, TimeUnit.MILLISECONDS);
-
-                        if (!executionResult.isSuccess() || !executionResult.getOutput().equals(sample.getOutput())) {
-                            executionSuccess.set(false);
-                        }
-                    } catch (TimeoutException e) {
+                    ExecutionResult executionResult = codeRunner.execute(compiledClassesPath, className, sample.getInput(), timeLimit);
+                    if (!executionResult.isSuccess()) {
+                        log.error("Execution failed: {}", executionResult.getErrorMessage());
                         executionSuccess.set(false);
-                    } catch (InterruptedException | ExecutionException e) {
-                        Thread.currentThread().interrupt();
+                    } else if (!executionResult.getOutput().equals(sample.getOutput())) {
+                        log.error("Output mismatch: expected={}, actual={}", sample.getOutput(), executionResult.getOutput());
                         executionSuccess.set(false);
-                    } finally {
-                        // 保证代码超时或者执行失败时，停止线程，关闭程序
-                        executor.shutdownNow();
-                        executeLatch.countDown();
                     }
+                    executeLatch.countDown();
                 });
             }
 
@@ -154,24 +144,12 @@ public class ProgrammingQuestion extends Question {
             }
 
             return executionSuccess.get();
-        } else {    // 不开线程池也做了下时间限制
+        } else {
             for (Sample sample : samples) {
                 String compiledClassesPath = studentAnswerPath.getParent().resolve("classes").toString();
-                ExecutorService executor = Executors.newSingleThreadExecutor();
-                Future<ExecutionResult> future = executor.submit(() -> codeRunner.execute(compiledClassesPath, className, sample.getInput()));
-                try {
-                    ExecutionResult executionResult = future.get(timeLimit, TimeUnit.MILLISECONDS); // timeLimit should be your actual time limit
-
-                    if (!executionResult.isSuccess() || !executionResult.getOutput().equals(sample.getOutput())) {
-                        return false;
-                    }
-                } catch (TimeoutException e) {
+                ExecutionResult executionResult = codeRunner.execute(compiledClassesPath, className, sample.getInput(), timeLimit);
+                if (!executionResult.isSuccess() || !executionResult.getOutput().equals(sample.getOutput())) {
                     return false;
-                } catch (InterruptedException | ExecutionException e) {
-                    Thread.currentThread().interrupt();
-                    return false;
-                } finally {
-                    executor.shutdownNow();
                 }
             }
             return true;

@@ -95,7 +95,7 @@ public class Main {
                     // 4. 输出到文件
                     try {
                         log.info("Writing to file: {}", path);
-                        log.info("ExamId: {}, StudentId: {}, Score: {}", answerSheet.getExamId(), answerSheet.getStuId(), score);
+                        log.info("ExamId: {}, StudentId: {}, Score: {}\n", answerSheet.getExamId(), answerSheet.getStuId(), score);
                         // 追加不是覆盖
                         Files.write(path, Collections.singleton(answerSheet.getExamId() + "," + answerSheet.getStuId() + "," + score), java.nio.file.StandardOpenOption.APPEND);
                     } catch (IOException e) {
@@ -149,6 +149,16 @@ public class Main {
                                         log.info("ExamId: {}, StudentId: {}, QuestionId: {}, Complexity: {}", answerSheet.getExamId(), answerSheet.getStuId(), answer.getId(), complexity);
                                         // 追加不是覆盖
                                         Files.write(path, Collections.singleton(answerSheet.getExamId() + "," + answerSheet.getStuId() + "," + answer.getId() + "," + complexity), java.nio.file.StandardOpenOption.APPEND);
+                                    } catch (IOException e) {
+                                        log.error("IOException:", e);
+                                    }
+                                } else {
+                                    // 失败就写入-1
+                                    try {
+                                        log.info("Writing to file: {}", path);
+                                        log.info("ExamId: {}, StudentId: {}, QuestionId: {}, Complexity: -1", answerSheet.getExamId(), answerSheet.getStuId(), answer.getId());
+                                        // 追加不是覆盖
+                                        Files.write(path, Collections.singleton(answerSheet.getExamId() + "," + answerSheet.getStuId() + "," + answer.getId() + ",-1"), java.nio.file.StandardOpenOption.APPEND);
                                     } catch (IOException e) {
                                         log.error("IOException:", e);
                                     }

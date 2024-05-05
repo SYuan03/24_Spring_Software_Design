@@ -17,7 +17,7 @@ public class SimpleThreadPool {
         workerThreads = new SimpleWorkerThread[NUM_WORKERS];
         for (int i = 0; i < NUM_WORKERS; i++) {
             workerThreads[i] = new SimpleWorkerThread(this);
-            new Thread(workerThreads[i], "Worker-" + i).start();
+            new Thread(workerThreads[i], "MySingleTP-Worker-" + i).start();
         }
     }
 
