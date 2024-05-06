@@ -9,7 +9,7 @@ import java.util.Queue;
  */
 public class SimpleThreadPool {
     private static final int NUM_WORKERS = 5;
-    private static SimpleThreadPool instance = null;
+    private static volatile SimpleThreadPool instance = null;
     private final Queue<Runnable> taskQueue = new LinkedList<>();
     private final SimpleWorkerThread[] workerThreads;
 
@@ -21,9 +21,13 @@ public class SimpleThreadPool {
         }
     }
 
-    public static synchronized SimpleThreadPool getInstance() {
+    public static SimpleThreadPool getInstance() {
         if (instance == null) {
-            instance = new SimpleThreadPool();
+            synchronized (SimpleThreadPool.class) {
+                if (instance == null) {
+                    instance = new SimpleThreadPool();
+                }
+            }
         }
         return instance;
     }
